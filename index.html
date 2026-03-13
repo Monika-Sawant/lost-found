@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Campus Lost & Found</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="navbar">
+    <h1>🎒 Lost&Found</h1>
+    <nav>
+      <a href="#lost">Lost</a>
+      <a href="#found">Found</a>
+      <a href="#report">Report</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h2>Lost something on campus?</h2>
+    <p>Don’t worry. Let’s help you find it.</p>
+    <button>Report an Item</button>
+  </section>
+
+  <!-- Lost Items -->
+  <section id="lost" class="items">
+    <h2>Lost Items</h2>
+    <div class="card-container">
+      <div class="card">
+        <img src="images/bottle.jpg" alt="Bottle">
+        <h3>Water Bottle</h3>
+        <p>Near Library</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Found Items -->
+  <section id="found" class="items">
+    <h2>Found Items</h2>
+    <div class="card-container">
+      <div class="card">
+        <img src="images/idcard.jpg" alt="ID Card">
+        <h3>ID Card</h3>
+        <p>Computer Lab</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Report Form -->
+  <section id="report" class="report">
+    <h2>Report an Item below</h2>
+    <form>
+      <input type="text" placeholder="Item Name" required />
+      <input type="text" placeholder="Location" required />
+      <select>
+      <option value="lost">Lost</option>
+      <option value="found">Found</option>
+      </select>
+
+      <input type="file" />
+      <button type="submit">Submit</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>Made with ❤️ for campus</p>
+  </footer>
+
+<script src="script.js"></script>
+</body>
+</html>

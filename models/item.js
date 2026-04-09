@@ -9,6 +9,9 @@ const itemSchema = new mongoose.Schema(
     description: {
       type: String,
     },
+    details: {
+      type: [String],
+    },
     category: {
       type: String,
       enum: ["lost", "found"],
@@ -19,8 +22,16 @@ const itemSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["open", "closed"],
+      enum: ["open", "resolved"],
       default: "open",
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    resolverName: {
+      type: String,
     },
   },
   { timestamps: true }

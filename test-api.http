@@ -1,0 +1,69 @@
+### Setup Variables
+@baseUrl = http://localhost:5000/api
+@authToken = <your_token_here>
+
+### 1. Register User
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "password123"
+}
+
+### 2. Login User
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "password123"
+}
+
+### 3. Get Open Items (All)
+GET {{baseUrl}}/items
+
+### 4. Get Open Items (Lost Only)
+GET {{baseUrl}}/items?category=lost
+
+### 5. Get Open Items (Found Only)
+GET {{baseUrl}}/items?category=found
+
+### 6. Create Lost Item (Needs Auth)
+POST {{baseUrl}}/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "title": "Black Umbrella",
+    "description": "Left a black umbrella in the library",
+    "details": ["Brand: Totes", "Color: Black", "Condition: Slightly used"],
+    "category": "lost",
+    "location": "Library 2nd Floor"
+}
+
+### 7. Create Found Item (Needs Auth)
+POST {{baseUrl}}/items
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "title": "Student ID Card",
+    "description": "Found an ID card near the cafeteria",
+    "details": ["Name on ID: John Doe", "ID number: 123456"],
+    "category": "found",
+    "location": "Cafeteria"
+}
+
+### 8. Resolve an Item (Needs Auth)
+# Replace <item_id> with an actual Item's ID from step 3
+PUT {{baseUrl}}/items/<item_id>/resolve
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "resolverName": "John Smith"
+}
+
+### 9. Get Leaderboard
+GET {{baseUrl}}/users/leaderboard

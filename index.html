@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Campus Lost & Found</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
   <!-- Header -->
@@ -14,14 +16,43 @@
       <a href="#lost">Lost</a>
       <a href="#found">Found</a>
       <a href="#report">Report</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#login" id="auth-link">Login</a>
+      <a href="#" id="logout-btn" style="display:none;">Logout</a>
     </nav>
   </header>
 
+  <!-- Login/Register Section -->
+  <section id="login" class="report"
+    style="display: none; display: flex; flex-direction: column; align-items: center; gap: 20px;">
+
+    <div style="width: 100%; max-width: 420px; text-align: left;">
+      <h2>Login</h2>
+      <form id="login-form">
+        <input type="email" id="login-email" placeholder="Email" required />
+        <input type="password" id="login-password" placeholder="Password" required />
+        <button type="submit" style="width: 100%;">Login</button>
+      </form>
+    </div>
+
+    <div style="width: 100%; max-width: 420px; text-align: left; margin-top: 20px;">
+      <h2>Register</h2>
+      <form id="register-form">
+        <input type="text" id="reg-name" placeholder="Full Name" required />
+        <input type="text" id="reg-desc" placeholder="Who are you? (e.g. Student at XY, Dept)" required />
+        <input type="email" id="reg-email" placeholder="Email" required />
+        <input type="password" id="reg-password" placeholder="Password" required />
+        <button type="submit"
+          style="width: 100%; background: linear-gradient(135deg, #10b981, #059669);">Register</button>
+      </form>
+    </div>
+  </section>
+
   <!-- Hero Section -->
-  <section class="hero">
+  <section id="home" class="hero">
     <h2>Lost something on campus?</h2>
     <p>Don’t worry. Let’s help you find it.</p>
-    <button>Report an Item</button>
+    <button onclick="document.getElementById('report').scrollIntoView();">Report an Item</button>
   </section>
 
   <!-- Lost Items -->
@@ -51,17 +82,45 @@
   <!-- Report Form -->
   <section id="report" class="report">
     <h2>Report an Item below</h2>
-    <form>
-      <input type="text" placeholder="Item Name" required />
-      <input type="text" placeholder="Location" required />
-      <select>
-      <option value="lost">Lost</option>
-      <option value="found">Found</option>
+    <form id="report-form">
+      <input type="text" id="item-title" placeholder="Item Name (e.g., Bottle)" required />
+      <input type="text" id="item-desc" placeholder="Short Description (one line)" required />
+      <textarea id="item-details" placeholder="Details (comma separated list, e.g. Color: Red, Brand: Nike)" rows="3"
+        style="margin-bottom: 18px; padding: 14px; border-radius: 12px; border: 1px solid #d1d5db;"></textarea>
+      <input type="text" id="item-location" placeholder="Location" required />
+      <select id="item-category">
+        <option value="lost">Lost</option>
+        <option value="found">Found</option>
       </select>
-
-      <input type="file" />
       <button type="submit">Submit</button>
     </form>
+  </section>
+
+  <!-- Resolve Section -->
+  <section id="resolve-section" class="report">
+    <h2>Resolve an Item</h2>
+    <p style="color: #6b7280; margin-bottom: 20px;">Found an item that belongs to someone? Resolve it here!</p>
+    <form id="resolve-form">
+      <select id="resolve-item-select" required>
+        <option value="">-- Select an Open Item --</option>
+      </select>
+      <input type="text" id="resolve-name" placeholder="Your Name (Resolver)" required />
+      <button type="submit" style="background: linear-gradient(135deg, #10b981, #059669);">Mark as Resolved</button>
+    </form>
+  </section>
+
+  <!-- Leaderboard Section -->
+  <section id="leaderboard" class="items">
+    <h2>Leaderboard - Top Heroes</h2>
+    <div style="text-align: center; margin-bottom: 30px;">
+      <p
+        style="background: #fef3c7; color: #d97706; display: inline-block; padding: 10px 20px; border-radius: 12px; font-weight: bold;">
+        🏆 Score Constraint: +1 Point assigned for every item successfully returned/resolved!
+      </p>
+    </div>
+    <div class="card-container" id="leaderboard-container">
+      <!-- Leaderboard users will be injected here -->
+    </div>
   </section>
 
   <!-- Footer -->
@@ -69,6 +128,7 @@
     <p>Made with ❤️ for campus</p>
   </footer>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
+
 </html>

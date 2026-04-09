@@ -149,16 +149,18 @@ async function loadItems() {
 
     const lostContainer = document.querySelector("#lost .card-container");
     const foundContainer = document.querySelector("#found .card-container");
-    const resolveSelect = document.getElementById("resolve-item-select");
+    const resolveItemSelect = document.getElementById("resolve-item-select");
+    const resolveBySelect = document.getElementById("resolve-by-select");
 
     lostContainer.innerHTML = "";
     foundContainer.innerHTML = "";
-    resolveSelect.innerHTML = '<option value="">-- Select an Open Item --</option>';
+    resolveItemSelect.innerHTML = '<option value="">-- Select Your Lost Item --</option>';
+    resolveBySelect.innerHTML = '<option value="">-- Resolved By (Select Finder) --</option>';
+
+    // Keep track of unique finders
+    const uniqueFinders = new Map();
 
     items.forEach(item => {
-      // Setup dynamic select for Resolve section
-      resolveSelect.innerHTML += `<option value="${item._id}">${item.title} (${item.category.toUpperCase()}) - ${item.location}</option>`;
-
       // Build details list
       let detailsHtml = "";
       if (item.details && item.details.length > 0) {
@@ -173,13 +175,27 @@ async function loadItems() {
           <p style="font-weight: bold;">${item.description || "No description"}</p>
           ${detailsHtml}
           <p>📍 ${item.location}</p>
+          <div style="background: #eef2ff; margin: 15px; padding: 12px; border-radius: 12px; border-left: 4px solid #4f46e5; text-align: left;">
+            <p style="font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #374151;">Contact info:</p>
+            <p style="margin: 0; color: #4b5563; font-size: 0.85rem;">👤 ${(item.userId && typeof item.userId === 'object' && item.userId.name) ? item.userId.name : 'Unknown User'}</p>
+            <p style="margin: 0; color: #4b5563; font-size: 0.85rem;">✉️ <a href="mailto:${(item.userId && typeof item.userId === 'object' && item.userId.email) ? item.userId.email : ''}" style="color: #4f46e5; text-decoration: none;">${(item.userId && typeof item.userId === 'object' && item.userId.email) ? item.userId.email : 'No email'}</a></p>
+          </div>
         </div>
       `;
 
       if (item.category === "lost") {
         lostContainer.innerHTML += card;
+        // Populate first dropdown only with Lost Items
+        resolveItemSelect.innerHTML += `<option value="${item._id}">${item.title} - ${item.location}</option>`;
       } else {
         foundContainer.innerHTML += card;
+        // Populate second dropdown mapping unique people who found something
+        if (item.userId) {
+          const finderId = typeof item.userId === 'object' ? item.userId._id : item.userId;
+          const finderName = typeof item.userId === 'object' ? item.userId.name : item.userId;
+          // Store foundItemId:finderId as value so we can resolve both
+          resolveBySelect.innerHTML += `<option value="${item._id}:${finderId}">${finderName} (Found: ${item.title})</option>`;
+        }
       }
     });
   } catch (err) {
@@ -198,12 +214,15 @@ if(resolveForm) {
     }
 
     const itemId = document.getElementById("resolve-item-select").value;
-    const resolverName = document.getElementById("resolve-name").value;
+    const resolveByValue = document.getElementById("resolve-by-select").value;
     
-    if (!itemId) {
-      alert("Please select an item first!");
+    if (!itemId || !resolveByValue) {
+      alert("Please select both your Lost item and the Finder!");
       return;
     }
+
+    // Value format: "foundItemId:resolverUserId"
+    const [foundItemId, resolverUserId] = resolveByValue.split(":");
 
     try {
       const res = await fetch(`${API_URL}/items/${itemId}/resolve`, {
@@ -212,11 +231,11 @@ if(resolveForm) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${authToken}`
         },
-        body: JSON.stringify({ resolverName })
+        body: JSON.stringify({ resolverUserId, foundItemId })
       });
 
       if (res.ok) {
-        alert("Item resolved successfully! Your score increased by +1!");
+        alert("Item resolved successfully! The Finder's score increased by +1!");
         resolveForm.reset();
         loadItems(); // refresh list & dropdown
         loadLeaderboard(); // refresh leaderboard

@@ -32,7 +32,9 @@ exports.getItems = async (req, res) => {
       filter.category = category;
     }
 
-    const items = await Item.find(filter).sort({ createdAt: -1 });
+    const items = await Item.find(filter)
+      .populate("userId", "name description email")
+      .sort({ createdAt: -1 });
 
     res.status(200).json(items);
   } catch (error) {
@@ -62,32 +64,41 @@ exports.updateItem = async (req, res) => {
 // RESOLVE ITEM
 exports.resolveItem = async (req, res) => {
   try {
-    const { resolverName } = req.body;
+    const { resolverUserId, foundItemId } = req.body;
 
-    if (!resolverName) {
-      return res.status(400).json({ message: "Please provide a resolver name" });
+    if (!resolverUserId) {
+      return res.status(400).json({ message: "Please select who resolved the item" });
     }
 
+    // Find and validate the lost item
     const item = await Item.findById(req.params.id);
-
     if (!item) {
       return res.status(404).json({ message: "Item not found" });
     }
-
     if (item.status === "resolved") {
       return res.status(400).json({ message: "Item is already resolved" });
     }
 
-    // Mark as resolved
+    // Find the finder user and increment their score
+    const resolverUser = await User.findById(resolverUserId);
+    if (!resolverUser) {
+      return res.status(404).json({ message: "Finder (Resolver) not found" });
+    }
+    resolverUser.score += 1;
+    await resolverUser.save();
+
+    // Mark the lost item as resolved
     item.status = "resolved";
-    item.resolverName = resolverName;
+    item.resolverName = resolverUser.name;
     await item.save();
 
-    // Increment score for the user who resolved it (the one logged in)
-    const user = await User.findById(req.user.id);
-    if (user) {
-      user.score += 1;
-      await user.save();
+    // Also mark the corresponding found item as resolved (remove it from Found list)
+    if (foundItemId) {
+      const foundItem = await Item.findById(foundItemId);
+      if (foundItem && foundItem.status === "open") {
+        foundItem.status = "resolved";
+        await foundItem.save();
+      }
     }
 
     res.status(200).json({ message: "Item resolved successfully", item });

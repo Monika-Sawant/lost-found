@@ -99,12 +99,14 @@
   <!-- Resolve Section -->
   <section id="resolve-section" class="report">
     <h2>Resolve an Item</h2>
-    <p style="color: #6b7280; margin-bottom: 20px;">Found an item that belongs to someone? Resolve it here!</p>
+    <p style="color: #6b7280; margin-bottom: 20px;">Did you get your lost item back? Resolve it here!</p>
     <form id="resolve-form">
       <select id="resolve-item-select" required>
-        <option value="">-- Select an Open Item --</option>
+        <option value="">-- Select Your Lost Item --</option>
       </select>
-      <input type="text" id="resolve-name" placeholder="Your Name (Resolver)" required />
+      <select id="resolve-by-select" required>
+        <option value="">-- Resolved By (Select Finder) --</option>
+      </select>
       <button type="submit" style="background: linear-gradient(135deg, #10b981, #059669);">Mark as Resolved</button>
     </form>
   </section>
